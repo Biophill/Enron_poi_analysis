@@ -75,10 +75,17 @@ def main(investigation_phase = False, text_classify = False,
 		dump_classifier_and_data(clf, data_dict, features_list)
 	
 
+'''
+Function that identified the number of time a name is in the top 10%
+of the data and its total number of NA. It also identifies the number
+of NA in every features and separates it by poi and non_poi.
 
-#Function that identified the number of time a name is in the top 10%
-#of the data and its total number of NA. It also identifies the number
-#of NA in every features and separates it by poi and non_poi.
+It prints two files with the outlier data.
+  -outlier_array.out contains every time an individual had a value in
+   the top 10% of the feature and a count of all NAs
+  -feature_NA_array.out count the total number of NAs and there ratio
+   between affected and non-affected for all the features.
+'''
 def outlier_handling(data_dict):
 	outlier_dict, feature_dict = outlierFinder(data_dict)
 	outlier_array = outlierToTable(outlier_dict)
