@@ -45,8 +45,8 @@ the function.
 	the top features classifier to pickle files that will be read by a testing
 	program.
 '''
-def main(investigation_phase = False, text_classify = False,
-				main_classify = False, classifier_dump = True):
+def main(investigation_phase = False, text_classify = True,
+				main_classify = False, classifier_dump = False):
 ### Load the dictionary containing the dataset
 	with open("final_project_dataset.pkl", "r") as data_file:
 		data_dict = pickle.load(data_file)
@@ -77,17 +77,17 @@ def main(investigation_phase = False, text_classify = False,
 
 
 def outlier_handling(data_dict):
-'''
-Function that identified the number of time a name is in the top 10%
-of the data and its total number of NA. It also identifies the number
-of NA in every features and separates it by poi and non_poi.
+	'''
+	Function that identified the number of time a name is in the top 10%
+	of the data and its total number of NA. It also identifies the number
+	of NA in every features and separates it by poi and non_poi.
 
-It prints two files with the outlier data.
-  -outlier_array.out contains every time an individual had a value in
-   the top 10% of the feature and a count of all NAs
-  -feature_NA_array.out count the total number of NAs and there ratio
-   between affected and non-affected for all the features.
-'''
+	It prints two files with the outlier data.
+	  -outlier_array.out contains every time an individual had a value in
+	   the top 10% of the feature and a count of all NAs
+	  -feature_NA_array.out count the total number of NAs and there ratio
+	   between affected and non-affected for all the features.
+	'''
 	outlier_dict, feature_dict = outlierFinder(data_dict)
 	outlier_array = outlierToTable(outlier_dict)
 	#These arrays are written to two files for manual inspection of outliers
@@ -125,12 +125,12 @@ features in the analysis, but final features should be assessed for
 this potential problem.
 '''
 def outlier_removal(data_dict):
-'''
-Function takes a list of outliers and receive the dictionary of features
-and then remove the individual outliers from the dictionary.
+	'''
+	Function takes a list of outliers and receive the dictionary of features
+	and then remove the individual outliers from the dictionary.
 
-returns the modified dictionary.
-'''
+	returns the modified dictionary.
+	'''
 	outlier = ["TOTAL", "LOCKHART EUGENE E", "THE TRAVEL AGENCY IN THE PARK"]
 	try:
 		for out in outlier:
@@ -140,19 +140,19 @@ returns the modified dictionary.
 	return data_dict
 
 def feature_creation(data_dict):
-'''
-New features were created for testing. First a ratio feature that account for 
-the proportion of emails sent and received by poi was created. Second a ratio
-of the exercised vs restricted stock was also created. The rational for the
-first is that some people simply have to send more emails and a direct use of
-the number of Emails interacting with poi may be biased. The second variable
-created was done to account for a potential change in the term of contract for
-individuals that were aware that the company was going down.
+	'''
+	New features were created for testing. First a ratio feature that account for 
+	the proportion of emails sent and received by poi was created. Second a ratio
+	of the exercised vs restricted stock was also created. The rational for the
+	first is that some people simply have to send more emails and a direct use of
+	the number of Emails interacting with poi may be biased. The second variable
+	created was done to account for a potential change in the term of contract for
+	individuals that were aware that the company was going down.
 
-Takes the Enron's feature dictionary and created 3 new features.
+	Takes the Enron's feature dictionary and created 3 new features.
 
-returns the modified dictionary.
-'''
+	returns the modified dictionary.
+	'''
 	for key in data_dict:
 		person = data_dict[key]
 		
@@ -186,17 +186,17 @@ returns the modified dictionary.
 	
 
 def feature_select(data_dict):
-'''
-This features creates the PCA and select the top features.
+	'''
+	This features creates the PCA and select the top features.
 
-It takes the Enron's feature dictionary and returns 3 arrays.
-  - A 2 x n array, where n is the number of individuals and
-    the two columns are PCA generated on all features
-  - A k x n array, where k is the number of selected features
-    and n is the number of individuals.
-  - A n list including the poi status of all individuals in
-    the previous arrays
-'''	
+	It takes the Enron's feature dictionary and returns 3 arrays.
+	  - A 2 x n array, where n is the number of individuals and
+		the two columns are PCA generated on all features
+	  - A k x n array, where k is the number of selected features
+		and n is the number of individuals.
+	  - A n list including the poi status of all individuals in
+		the previous arrays
+	'''	
 
 	features_list = ['poi','salary', 'deferral_payments', 'total_payments',
 					'loan_advances', 'bonus', 'restricted_stock_deferred',
@@ -221,19 +221,19 @@ It takes the Enron's feature dictionary and returns 3 arrays.
 	return pca_features, selected_features, labels
 
 def text_classifier(data_dict):
-'''
-This function is the main function appealing to other functions
-in the dependencies folder. This function creates a dict of all
-the emails of all poi and non-poi. Then it iterate through the dict
-and feed the results to the email_open function. In turn this
-function feed a list of email_path to email_process which will
-return a list of emails. This will finally be fed to a 
-vectorizing function which will root the words and return them
-for the classification.
+	'''
+	This function is the main function appealing to other functions
+	in the dependencies folder. This function creates a dict of all
+	the emails of all poi and non-poi. Then it iterate through the dict
+	and feed the results to the email_open function. In turn this
+	function feed a list of email_path to email_process which will
+	return a list of emails. This will finally be fed to a 
+	vectorizing function which will root the words and return them
+	for the classification.
 
-The function classify the list of emails and test them using
-different metrics.
-'''
+	The function classify the list of emails and test them using
+	different metrics.
+	'''
 	email_dict = poiEmails()
 	for key in email_dict:
 		email_dict[key] ={"email": email_dict[key],
@@ -267,17 +267,17 @@ different metrics.
 	
 	
 def classifier_handler(features, labels, classifier, new = True, scaling = False):
-'''
-Trying multiple classifiers and multiple parameters for classifying
-poi based on financial and email data.
+	'''
+	Trying multiple classifiers and multiple parameters for classifying
+	poi based on financial and email data.
 
-This function takes an array of features and a list of labels. It also takes
-a classifier name in the following: "NB", "DecisionTree", "SupportVectorMachine",
-"Kmeans". If new = True the function will test multiple parameters for the 
-classifiers and identify the optimised one. Futur iterations will use these
-parameters. If scaling= True then the classifier will scale the features using
-the sklearn MinMaxScaler.
-'''
+	This function takes an array of features and a list of labels. It also takes
+	a classifier name in the following: "NB", "DecisionTree", "SupportVectorMachine",
+	"Kmeans". If new = True the function will test multiple parameters for the 
+	classifiers and identify the optimised one. Futur iterations will use these
+	parameters. If scaling= True then the classifier will scale the features using
+	the sklearn MinMaxScaler.
+	'''
 	if scaling:
 		min_max_scaler = MinMaxScaler()
 		features = min_max_scaler.fit_transform(features)
@@ -306,11 +306,11 @@ the sklearn MinMaxScaler.
 	return clf
 	
 def classifier_tester(features, labels, classifier):
-'''	 
-This function takes the features, labels and the optimised classifier and
-test the recall and precision of the classifier using an iteration method.
-It prints those to the prompt.
-'''
+	'''	 
+	This function takes the features, labels and the optimised classifier and
+	test the recall and precision of the classifier using an iteration method.
+	It prints those to the prompt.
+	'''
 	ss = ShuffleSplit(len(features), n_iter=20, test_size=0.10, random_state = 0)
 	precision = []
 	recall = []
